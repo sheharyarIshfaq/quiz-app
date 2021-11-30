@@ -1,0 +1,9 @@
+.navbar {
+  background-color: #344cb7;
+  color: #fff;
+  padding: 1rem 2rem;
+}
+.title {
+  letter-spacing: 2px;
+  font-size: 2rem;
+}
