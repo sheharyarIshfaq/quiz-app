@@ -12,6 +12,7 @@
   background-color: #344cb7;
   color: #fff;
   border-radius: 8px;
+  width: 500px;
 }
 .startBtn {
   font-size: 1.4rem;
@@ -27,8 +28,28 @@
 .startBtn:hover {
   background-color: #4058c4;
 }
+.nextBtnContainer {
+  display: flex;
+  justify-content: flex-end;
+}
+.nextBtn {
+  background-color: transparent;
+  border: 2px solid #fff;
+  border-radius: 20px;
+  outline: 0;
+  padding: 6px 16px;
+  font-size: 1rem;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease-in;
+}
+.nextBtn:hover {
+  background-color: #fff;
+  color: #111;
+}
 .score {
   margin-top: 2rem;
+  text-align: center;
 }
 .title {
   letter-spacing: 2px;
@@ -58,12 +79,25 @@
   border: 2px solid #00ff5e !important;
   color: #00ff5e !important;
 }
+.true:hover {
+  background-color: transparent !important;
+  color: #00ff5e !important;
+}
 
 .false {
   border: 2px solid #ff0000 !important;
   color: #ff0000;
 }
+.false:hover {
+  background-color: transparent !important;
+  color: #ff0000 !important;
+}
 
+@media (max-width: 550px) {
+  .card {
+    width: fit-content;
+  }
+}
 @media (max-width: 370px) {
   .card {
     padding: 1rem 2rem;
