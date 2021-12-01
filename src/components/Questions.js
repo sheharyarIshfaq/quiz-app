@@ -33,6 +33,7 @@ const Questions = () => {
   const nextQuestionHandler = () => {
     setSubmitted(false);
     dispatch(quizActions.changeQuestion());
+    console.log(score);
   };
 
   const checkOptionHandler = (e) => {
@@ -45,6 +46,11 @@ const Questions = () => {
   const checkScoreHandler = () => {
     setSubmitted(false);
     dispatch(quizActions.showScore());
+    dispatch(quizActions.changeQuestion());
+    if (score === 4) {
+      dispatch(quizActions.increase());
+    }
+    console.log(score);
   };
 
   return (
@@ -93,7 +99,7 @@ const Questions = () => {
       )}
       {showScore && (
         <div className={`${classes.card} ${classes.score}`}>
-          <h1>You scored {score === 4 ? "5" : score} out of 5</h1>
+          <h1>You scored {score} out of 5</h1>
         </div>
       )}
     </div>
