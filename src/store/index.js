@@ -5,6 +5,9 @@ const initialState = {
   current: 0,
   currentQuestion: null,
   score: 0,
+  category: 9,
+  difficulty: "easy",
+  isLoading: false,
 };
 
 const quizSlice = createSlice({
@@ -14,17 +17,29 @@ const quizSlice = createSlice({
     setQuestions(state, action) {
       state.questions = action.payload;
     },
+    setCategory(state, action) {
+      state.category = action.payload;
+    },
+    setDifficulty(state, action) {
+      state.difficulty = action.payload;
+    },
     start(state) {
       state.current = 0;
       state.score = 0;
       state.currentQuestion = state.questions[state.current];
       state.current++;
+      state.category = initialState.category;
+      state.difficulty = initialState.difficulty;
+      state.isLoading = initialState.isLoading;
     },
     changeQuestion(state) {
       state.currentQuestion = state.questions[state.current++];
     },
     increase(state) {
       state.score++;
+    },
+    setIsLoading(state, action) {
+      state.isLoading = action.payload;
     },
   },
 });

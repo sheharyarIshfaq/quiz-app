@@ -5,21 +5,25 @@ import { quizActions } from "../store";
 
 import classes from "./Questions.module.css";
 import Spinner from "./UI/Spinner";
+import UserChoice from "./UserChoice";
 
 const Questions = () => {
   const [submitted, setSubmitted] = useState(false);
   const [rightOption, setRightOption] = useState();
   const [options, setOptions] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
 
   const [showQuiz, setShowQuiz] = useState(false);
   const [showScore, setShowScore] = useState(false);
 
   const dispatch = useDispatch();
 
+  const isLoading = useSelector((state) => state.isLoading);
+
   const currentQuestion = useSelector((state) => state.currentQuestion);
   const current = useSelector((state) => state.current);
   const score = useSelector((state) => state.score);
+  const category = useSelector((state) => state.category);
+  const difficulty = useSelector((state) => state.difficulty);
 
   const randomNum = (maxNum) => {
     return Math.floor(Math.random() * Math.floor(maxNum));
@@ -41,14 +45,14 @@ const Questions = () => {
 
   const startQuizHandler = async () => {
     setShowScore(false);
-    setIsLoading(true);
+    dispatch(quizActions.setIsLoading(true));
     const response = await fetch(
-      "https://opentdb.com/api.php?amount=5&category=18&type=multiple"
+      `https://opentdb.com/api.php?amount=5&category=${category}&difficulty=${difficulty}&type=multiple`
     );
     const data = await response.json();
     console.log(data.results);
     dispatch(quizActions.setQuestions(data.results));
-    setIsLoading(false);
+    dispatch(quizActions.setIsLoading(false));
     dispatch(quizActions.start());
     setShowQuiz(true);
   };
@@ -75,9 +79,12 @@ const Questions = () => {
     <div className={classes.container}>
       {isLoading && <Spinner />}
       {!showQuiz && !isLoading && (
-        <button className={classes.startBtn} onClick={startQuizHandler}>
-          Start the Quiz
-        </button>
+        <>
+          <UserChoice />
+          <button className={classes.startBtn} onClick={startQuizHandler}>
+            Start the Quiz
+          </button>
+        </>
       )}
       {showQuiz && currentQuestion && !showScore && !isLoading && (
         <div className={classes.card}>

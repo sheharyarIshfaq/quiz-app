@@ -1,0 +1,47 @@
+.mainContainer {
+  display: flex;
+  background-color: #344cb7;
+  padding: 2rem 4rem;
+  border-radius: 10px;
+  margin-bottom: 2rem;
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 10px;
+}
+.container label {
+  font-weight: bold;
+  color: #fff;
+}
+.container select {
+  margin-top: 4px;
+  width: 300px;
+  padding: 10px 14px;
+  font-size: 14px;
+  outline: 0;
+  border-radius: 6px;
+  color: #344cb7;
+  font-weight: bold;
+}
+.container select option {
+  padding: 10px 14px !important;
+  font-size: 14px;
+  font-weight: bold;
+  height: 90px;
+}
+@media (max-width: 850px) {
+  .mainContainer {
+    flex-direction: column;
+  }
+}
+@media (max-width: 470px) {
+  .mainContainer {
+    padding: 1rem;
+    width: 100%;
+  }
+  .container select {
+    width: 100%;
+  }
+}
