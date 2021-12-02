@@ -4,80 +4,99 @@ import { useSelector } from "react-redux";
 import { quizActions } from "../store";
 
 import classes from "./Questions.module.css";
+import Spinner from "./UI/Spinner";
 
 const Questions = () => {
   const [submitted, setSubmitted] = useState(false);
   const [rightOption, setRightOption] = useState();
+  const [options, setOptions] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [showQuiz, setShowQuiz] = useState(false);
+  const [showScore, setShowScore] = useState(false);
 
   const dispatch = useDispatch();
-  const showQuiz = useSelector((state) => state.startQuiz);
-  const showScore = useSelector((state) => state.showScore);
 
   const currentQuestion = useSelector((state) => state.currentQuestion);
   const current = useSelector((state) => state.current);
   const score = useSelector((state) => state.score);
 
+  const randomNum = (maxNum) => {
+    return Math.floor(Math.random() * Math.floor(maxNum));
+  };
+
   useEffect(() => {
-    if (currentQuestion) {
-      const option = currentQuestion.options.find(
-        (option) => option.isRight === true
-      );
-      setRightOption(option);
+    if (!currentQuestion) {
+      return;
     }
+
+    setRightOption(currentQuestion.correct_answer);
+
+    let options = [...currentQuestion.incorrect_answers];
+    const randomIdx = randomNum(currentQuestion.incorrect_answers.length);
+    options.splice(randomIdx, 0, currentQuestion.correct_answer);
+
+    setOptions(options);
   }, [currentQuestion]);
 
-  const startQuizHandler = () => {
+  const startQuizHandler = async () => {
+    setShowScore(false);
+    setIsLoading(true);
+    const response = await fetch(
+      "https://opentdb.com/api.php?amount=5&category=18&type=multiple"
+    );
+    const data = await response.json();
+    console.log(data.results);
+    dispatch(quizActions.setQuestions(data.results));
+    setIsLoading(false);
     dispatch(quizActions.start());
+    setShowQuiz(true);
   };
 
   const nextQuestionHandler = () => {
     setSubmitted(false);
     dispatch(quizActions.changeQuestion());
-    console.log(score);
   };
 
   const checkOptionHandler = (e) => {
     setSubmitted(true);
-    if (!submitted && e.target.innerText === rightOption.answer) {
+    if (!submitted && e.target.innerText === rightOption) {
       dispatch(quizActions.increase());
     }
   };
 
   const checkScoreHandler = () => {
     setSubmitted(false);
-    dispatch(quizActions.showScore());
-    dispatch(quizActions.changeQuestion());
-    if (score === 4) {
-      dispatch(quizActions.increase());
-    }
-    console.log(score);
+    setShowScore(true);
+    setShowQuiz(false);
   };
 
   return (
     <div className={classes.container}>
-      {!showQuiz && (
+      {isLoading && <Spinner />}
+      {!showQuiz && !isLoading && (
         <button className={classes.startBtn} onClick={startQuizHandler}>
           Start the Quiz
         </button>
       )}
-      {showQuiz && !showScore && (
+      {showQuiz && currentQuestion && !showScore && !isLoading && (
         <div className={classes.card}>
           <h1 className={classes.title}>Question {current}/5</h1>
           <p className={classes.question}>{currentQuestion.question}</p>
           <ul className={classes.options}>
-            {currentQuestion.options.map((option) => (
+            {options.map((option) => (
               <li
                 className={
                   submitted
-                    ? !option.isRight
+                    ? option !== rightOption
                       ? classes.false
                       : classes.true
                     : ""
                 }
-                key={option.answer}
+                key={option}
                 onClick={checkOptionHandler}
               >
-                {option.answer}
+                {option}
               </li>
             ))}
           </ul>
@@ -97,7 +116,7 @@ const Questions = () => {
           )}
         </div>
       )}
-      {showScore && (
+      {showScore && !isLoading && (
         <div className={`${classes.card} ${classes.score}`}>
           <h1>You scored {score} out of 5</h1>
         </div>
